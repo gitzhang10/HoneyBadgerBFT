@@ -213,8 +213,7 @@ def startClient():
 def git_pull():
     with settings(warn_only=True):
         if run('test -d HoneyBadgerBFT').failed:
-            run('git clone https://github.com/amiller/HoneyBadgerBFT.git')
+            run('git clone https://github.com/gitzhang10/HoneyBadgerBFT.git')
     with cd('~/HoneyBadgerBFT'):
-        run('git checkout another-dev')
         run('git pull')
 
