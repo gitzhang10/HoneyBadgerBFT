@@ -58,12 +58,11 @@ def install_dependencies():
 
     sudo('apt-get -y install python3-dev')
     sudo('apt-get -y install python3-gmpy2')
-    sudo('pip install --upgrade pip')
-    sudo('pip install -e .[dev]')
     sudo('apt-get -y install flex')
     sudo('apt-get -y install bison')
     sudo('apt-get -y install libgmp-dev')
     sudo('apt-get -y install libmpc-dev')
+    sudo('apt-get -y install libssl-dev')
     run('wget https://crypto.stanford.edu/pbc/files/pbc-0.5.14.tar.gz')
     run('tar -xvf pbc-0.5.14.tar.gz')
     with cd('pbc-0.5.14'):
