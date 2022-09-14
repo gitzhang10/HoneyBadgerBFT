@@ -44,27 +44,26 @@ def ping():
 
 @parallel
 def cloneRepo():
-    run('git clone https://github.com/amiller/HoneyBadgerBFT.git')
-    with cd('HoneyBadgerBFT'):
-        run('git checkout another-dev')
+    run('git clone https://github.com/gitzhang10/HoneyBadgerBFT.git')
+    cd('HoneyBadgerBFT')
+        # run('git checkout another-dev')
 
 @parallel
 def install_dependencies():
     sudo('apt-get update')
-    sudo('apt-get -y install python-gevent')
     sudo('apt-get -y install git')
-    sudo('apt-get -y install python-socksipy')
-    sudo('apt-get -y install python-pip')
-    sudo('apt-get -y install python-dev')
-    sudo('apt-get -y install python-gmpy2')
+    sudo('apt-get -y install python3-gevent')
+    sudo('apt-get -y install python3-socksipy')
+    sudo('apt-get -y install python3-pip')
+
+    sudo('apt-get -y install python3-dev')
+    sudo('apt-get -y install python3-gmpy2')
+    sudo('pip install --upgrade pip')
+    sudo('pip install -e .[dev]')
     sudo('apt-get -y install flex')
     sudo('apt-get -y install bison')
     sudo('apt-get -y install libgmp-dev')
-    sudo('apt-get -y install libssl-dev')
-    sudo('pip install pycrypto')
-    sudo('pip install ecdsa')
-    sudo('pip install zfec')
-    sudo('pip install gipc')
+    sudo('apt-get -y install libmpc-dev')
     run('wget https://crypto.stanford.edu/pbc/files/pbc-0.5.14.tar.gz')
     run('tar -xvf pbc-0.5.14.tar.gz')
     with cd('pbc-0.5.14'):
@@ -75,9 +74,8 @@ def install_dependencies():
         if run('test -d charm').failed:
             run('git clone https://github.com/JHUISI/charm.git')
         with cd('charm'):
-            run('git checkout 2.7-dev')
             run('./configure.sh')
-            sudo('python setup.py install')
+            sudo('make install')
 
 @parallel
 def prepare():
@@ -162,7 +160,7 @@ def runProtocol(N_, t_, B_, timespan_, tx='tx'):
     timespan = int(timespan_)
     print N, t, B, timespan
     with shell_env(LIBRARY_PATH='/usr/local/lib', LD_LIBRARY_PATH='/usr/local/lib'):
-        run('python -m HoneyBadgerBFT.test.honest_party_test_EC2 -k'
+        run('python -m HoneyBadgerBFT.experiments.honest_party_test_local -k'
             ' thsig%d_%d.keys -e ecdsa.keys -a %d -b %d -n %d -t %d -c thenc%d_%d.keys' % (N, t, timespan, B, N, t, N, t))
 
 @parallel
