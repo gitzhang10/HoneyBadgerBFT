@@ -51,17 +51,13 @@ def cloneRepo():
 @parallel
 def install_dependencies():
     sudo('apt-get update')
-    sudo('apt-get -y install git')
-    sudo('apt-get -y install python3-gevent')
-    sudo('apt-get -y install python3-socksipy')
     sudo('apt-get -y install python3-pip')
-
     sudo('apt-get -y install python3-dev')
-    sudo('apt-get -y install python3-gmpy2')
+    sudo('apt-get -y install python3-setuptools')
+    sudo('pip3 install --upgrade pip')
     sudo('apt-get -y install flex')
     sudo('apt-get -y install bison')
     sudo('apt-get -y install libgmp-dev')
-    sudo('apt-get -y install libmpc-dev')
     sudo('apt-get -y install libssl-dev')
     run('wget https://crypto.stanford.edu/pbc/files/pbc-0.5.14.tar.gz')
     run('tar -xvf pbc-0.5.14.tar.gz')
@@ -215,4 +211,4 @@ def git_pull():
             run('git clone https://github.com/gitzhang10/HoneyBadgerBFT.git')
     with cd('~/HoneyBadgerBFT'):
         run('git pull')
-
+        sudo('pip3 install -e .[dev]')
