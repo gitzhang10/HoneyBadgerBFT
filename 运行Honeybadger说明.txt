@@ -1,0 +1,107 @@
+一、docker本地测试运行
+
+sudo vim /etc/hosts
+添加 140.82.114.4    github.com
+或 192.30.253.112    github.com
+或192.30.255.112     github.com
+
+sudo apt update
+sudo apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io
+sudo usermod -aG docker $USER（登出重进）
+
+sudo curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+Docker中使用git clone。需要sudo vim /etc/resolv.conf    修改nameserver 8.8.8.8   重启service docker restart
+
+git clone https://github.com/initc3/HoneyBadgerBFT-Python.git
+cd HoneyBadgerBFT-Python
+docker-compose run --rm honeybadger
+
+二、部署
+***
+首先先生成三种钥匙
+python -m honeybadgerbft.crypto.threshsig.generate_keys 4 1 > thsig4_1.keys
+python -m HoneyBadgerBFT.ecdsa.generate_keys_ecdsa $N > ecdsa.keys
+python -m HoneyBadgerBFT.threshenc.generate_keys $N $(( N-2*t )) > thenc$((N))_$((t)).keys
+
+
+然后自己写Host文件，ipAll()里面只用保留下面两句：
+callFabFromIPList(result, 'removeHosts')
+callFabFromIPList(result, 'writeHosts')
+然后同步钥匙
+同步依赖（需修改）
+同步代码（需修改）
+开始运行（需修改，原代码运行的是honest_party_test_EC2.py。我们自己运行时，需要对该文件进行修改）
+***
+
+三、直接本地运行
+sudo apt-get update
+sudo apt-get -y install python3-pip python3-dev python3-setuptools
+sudo apt-get -y install bison flex libgmp-dev libssl-dev
+
+下载安装pbc
+wget https://crypto.stanford.edu/pbc/files/pbc-0.5.14.tar.gz
+tar -xvf pbc-0.5.14.tar.gz
+cd pbc-0.5.14
+./configure
+make
+sudo make install
+
+配环境
+export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+下载安装charm
+git clone https://github.com/JHUISI/charm.git
+cd charm
+./configure.sh
+sudo make install
+
+如果charm有些东西下不下来，可以考虑用下面方式先下载
+sudo pip3 install -r requirements.txt
+
+
+运行代码
+git clone https://github.com/initc3/HoneyBadgerBFT-Python.git
+cd HoneyBadgerBFT-Python
+sudo pip3 install --upgrade pip //必不可少
+sudo pip3 install -e .[dev] //用于下载缺失组件
+pytest -v --cov=honeybadgerbft //运行测试
+
+解决pip慢
+mkdir ~/.pip
+cd ~/.pip
+touch pip.conf
+给该文件添加：
+[global]
+index-url = http://pypi.douban.com/simple
+[install]
+trusted-host=pypi.douban.com
+
+其他源 https://pypi.tuna.tsinghua.edu.cn/simple
+
+
+
+
+
+
+
+//git clone https://github.com/gitzhang10/HoneyBadgerBFT.git
+//cd HoneyBadgerBFT
+//git checkout another-dev
+//cd docker
+//docker build -t honeybadgerbft .
+//docker run -e N="8" -e t="2" -e B="16" -it honeybadgerbft
+//python docker_compose_gen.py 4 1 8 > docker-compose.yml
+//docker-compose down && docker-compose up
+//修改 Dockerfile bionic 代表ubuntu18.04。trusty代表14.04。latest代表22.04
+//Dockerfile添加 RUN pip install hypothesis==3.44.8
+//RUN pip3 install psutil==5.7.2 -i https://pypi.douban.com/simple/
+
+
+
