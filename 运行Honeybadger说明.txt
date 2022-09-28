@@ -85,23 +85,3 @@ trusted-host=pypi.douban.com
 
 其他源 https://pypi.tuna.tsinghua.edu.cn/simple
 
-
-
-
-
-
-
-//git clone https://github.com/gitzhang10/HoneyBadgerBFT.git
-//cd HoneyBadgerBFT
-//git checkout another-dev
-//cd docker
-//docker build -t honeybadgerbft .
-//docker run -e N="8" -e t="2" -e B="16" -it honeybadgerbft
-//python docker_compose_gen.py 4 1 8 > docker-compose.yml
-//docker-compose down && docker-compose up
-//修改 Dockerfile bionic 代表ubuntu18.04。trusty代表14.04。latest代表22.04
-//Dockerfile添加 RUN pip install hypothesis==3.44.8
-//RUN pip3 install psutil==5.7.2 -i https://pypi.douban.com/simple/
-
-
-
